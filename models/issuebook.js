@@ -1,5 +1,7 @@
 const Sequelize = require("sequelize");
 const sequelize = require("./../database");
+const Book = require("./book");
+const User = require("./user")
 
 const Issuebook = sequelize.define(
   "issuebook",
@@ -35,5 +37,11 @@ const Issuebook = sequelize.define(
     timestamps: false,
   }
 );
+
+Book.hasMany(Issuebook, { foreignKey: {allowNull:false}, sourceKey: "status" });
+Issuebook.belongsTo(Book, { foreignKey: {allowNull:false}, targetKey: "status" });
+
+User.hasMany(Issuebook, { foreignKey: {allowNull:false}, sourceKey: "status" });
+Issuebook.belongsTo(User, { foreignKey: {allowNull:false}, targetKey: "status" });
 
 module.exports = Issuebook
