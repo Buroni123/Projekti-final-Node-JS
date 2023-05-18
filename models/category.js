@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
 const sequelize = require("./../database");
+const Book = require("./book");
 
 const Category = sequelize.define(
   "category",
