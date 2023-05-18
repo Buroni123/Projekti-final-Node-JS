@@ -7,6 +7,7 @@ const User = sequelize.define(
     name: {
       type: Sequelize.STRING(30),
       allowNull: false,
+      unique: true,
     },
     email: {
       type: Sequelize.STRING,
@@ -20,6 +21,7 @@ const User = sequelize.define(
     address: {
       type: Sequelize.STRING,
       allowNull: false,
+      unique: true,
     },
     status: {
       type: Sequelize.ENUM("Aktiv", "Jo aktiv"),
