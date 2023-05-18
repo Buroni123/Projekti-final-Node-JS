@@ -35,7 +35,13 @@ const Book = sequelize.define(
   }
 );
 
-Category.hasMany(Book, {foreignKey: {allowNull:false}, sourceKey: "status"})
-Book.belongsTo(Category, {foreignKey: {allowNull:false}, targetKey: "status"})
+Category.hasMany(Book, {
+  foreignKey: { allowNull: false },
+  sourceKey: "id",
+});
+Book.belongsTo(Category, {
+  foreignKey: { allowNull: false },
+  targetKey: "id",
+});
 
-module.exports = Book
+module.exports = Book;
