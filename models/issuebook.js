@@ -38,10 +38,10 @@ const Issuebook = sequelize.define(
   }
 );
 
-Book.hasMany(Issuebook, { foreignKey: {allowNull:false}, sourceKey: "status" });
-Issuebook.belongsTo(Book, { foreignKey: {allowNull:false}, targetKey: "status" });
+Book.hasMany(Issuebook, { foreignKey: {allowNull:false}, sourceKey: "id" });
+Issuebook.belongsTo(Book, { foreignKey: {allowNull:false}, targetKey: "id" });
 
-User.hasMany(Issuebook, { foreignKey: {allowNull:false}, sourceKey: "status" });
-Issuebook.belongsTo(User, { foreignKey: {allowNull:false}, targetKey: "status" });
+User.hasMany(Issuebook, { foreignKey: {allowNull:false}, sourceKey: "id" });
+Issuebook.belongsTo(User, { foreignKey: {allowNull:false}, targetKey: "id" });
 
 module.exports = Issuebook
