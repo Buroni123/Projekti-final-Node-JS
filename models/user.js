@@ -27,6 +27,10 @@ const User = sequelize.define(
       type: Sequelize.ENUM("Aktiv", "Jo aktiv"),
       defaultValue: "Aktiv",
     },
+    password: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    }
   },
   {
     timestamps: false,
