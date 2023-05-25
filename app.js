@@ -20,6 +20,14 @@ app.post('/users', (req,res) => {
     let address = req.body.address;
     let status = req.body.status;
     let password = bcrypt.hashSync(req.body.password, 6)
+
+    if (name.length < 4 || name.length > 20) {
+      return res.status(400).json({
+        status: 0,
+        message: "Name must be between 4 and 20 characters long!"
+      })
+    }
+
     User.findOne({
         where: {
             name,
@@ -128,6 +136,92 @@ app.put('/users/:id', (req,res) => {
         })
     })
 })
+
+app.post('/categories', (req,res)=>{
+  let name = req.body.name
+  let status = req.body.status
+
+  Category.create({
+    name,
+    status,
+  })
+  .then((newCategory) => {
+    res.status(200).json({
+      status: 1,
+      data: newCategory
+    })
+  })
+  .catch((err)=>{
+    res.status(400).json({
+      status: 0,
+      data: err.message,
+    })
+  })
+})
+
+app.get('/categories', (req,res)=>{
+  Category.findAll()
+  .then((categories)=>{
+    res.status(200).json({
+      status: 1,
+      data: categories,
+    })
+  })
+  .catch((err)=>{
+    res.status(400).json({
+      status: 0,
+      data: err.message,
+    })
+  })
+})
+
+app.post('/books', (req,res)=>{
+  let title = req.body.title
+  let description = req.body.description
+  let amount = req.body.amount
+  let coverImage = req.body.coverImage
+  let author = req.body.author
+  let status = req.body.status
+  let categoryId = req.body. categoryId
+
+  Book.create({
+    title,
+    description,
+    amount,
+    coverImage,
+    author,
+    status,
+    categoryId,
+  })
+  .then((newBook)=>{
+    res.status(200).json({
+      status: 1,
+      data: newBook,
+    })
+  })
+  .catch((err)=>{
+    res.status(400).json({
+      status: 0,
+      data: err.message,
+    })
+  })
+})
+
+app.get("/books", (req, res) => {
+  Book.findAll()
+    .then((books) => {
+      res.status(200).json({
+        status: 1,
+        data: books,
+      });
+    })
+    .catch((err) => {
+      res.status(400).json({
+        status: 0,
+        data: err.message,
+      });
+    });
+});
 
 sequelize.sync()
 app.listen(3000)
