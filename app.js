@@ -223,5 +223,90 @@ app.get("/books", (req, res) => {
     });
 });
 
+app.post("/users/:userId/take-book/:bookId", (req, res) => {
+  const userId = req.params.userId;
+  const bookId = req.params.bookId;
+
+  User.findByPk(userId)
+    .then((user) => {
+      if (!user) {
+        return res.status(404).json({
+          status: 0,
+          message: "User not found",
+        });
+      }
+
+      Book.findByPk(bookId)
+        .then((book) => {
+          if (!book) {
+            return res.status(404).json({
+              status: 0,
+              message: "Book not found",
+            });
+          }
+
+          if (book.amount <= 0) {
+            return res.status(400).json({
+              status: 0,
+              message: "No available copies of the book",
+            });
+          }
+            
+          //i kaam jap keto vlera per testim
+          const daysIssued = 7;
+          const issueDate = new Date();
+          const isReturned = false;
+          const returnedDate = new Date();
+
+          book
+            .decrement("amount")
+            .then(() => {
+              Issuebook.create({
+                userId: userId,
+                bookId: bookId,
+                daysIssued: daysIssued,
+                issueDate: issueDate,
+                isReturned: isReturned,
+                returnedDate: returnedDate,
+              })
+                .then((issue) => {
+                  res.status(200).json({
+                    status: 1,
+                    message: "Book successfully issued",
+                    data: issue,
+                  });
+                })
+                .catch((err) => {
+                  res.status(500).json({
+                    status: 0,
+                    message: "An error occurred while issuing the book",
+                    error: err.message,
+                  });
+                });
+            })
+            .catch((err) => {
+              res.status(500).json({
+                status: 0,
+                message: "An error occurred while updating the book",
+                error: err.message,
+              });
+            });
+        })
+        .catch((err) => {
+          res.status(500).json({
+            status: 0,
+            message: "An error occurred while retrieving the book",
+            error: err.message,
+          });
+        });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        status: 0,
+        message: "An error occurred while retrieving the user",
+        error: err.message,
+      });
+    });
+});
 sequelize.sync()
 app.listen(3000)
