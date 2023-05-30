@@ -9,12 +9,10 @@ const Issuebook = sequelize.define(
     bookId: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      unique: true,
     },
     userId: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      unique: true,
     },
     daysIssued: {
       type: Sequelize.INTEGER,
@@ -25,7 +23,7 @@ const Issuebook = sequelize.define(
       allowNull: false,
     },
     isReturned: {
-      type: Sequelize.DATE,
+      type: Sequelize.BOOLEAN,
       allowNull: false,
     },
     returnedDate: {
