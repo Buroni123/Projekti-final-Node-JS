@@ -308,5 +308,101 @@ app.post("/users/:userId/take-book/:bookId", (req, res) => {
       });
     });
 });
+
+app.post("/users/:userId/return-book/:bookId", (req, res) => {
+  const userId = req.params.userId;
+  const bookId = req.params.bookId;
+
+  User.findByPk(userId)
+    .then((user) => {
+      if (!user) {
+        return res.status(404).json({
+          status: 0,
+          message: "User not found",
+        });
+      }
+
+      Book.findByPk(bookId)
+        .then((book) => {
+          if (!book) {
+            return res.status(404).json({
+              status: 0,
+              message: "Book not found",
+            });
+          }
+
+          Issuebook.findOne({
+            where: {
+              userId: userId,
+              bookId: bookId,
+              isReturned: false,
+            },
+          })
+            .then((issue) => {
+              if (!issue) {
+                return res.status(400).json({
+                  status: 0,
+                  message: "The book is already returned",
+                });
+              }
+
+              issue
+                .update({
+                  isReturned: true,
+                  returnedDate: new Date(),
+                })
+                .then((updatedIssue) => {
+                  book
+                    .increment("amount")
+                    .then(() => {
+                      res.status(200).json({
+                        status: 1,
+                        message: "Book successfully returned",
+                        data: updatedIssue,
+                      });
+                    })
+                    .catch((err) => {
+                      res.status(500).json({
+                        status: 0,
+                        message: "An error occurred while updating the book",
+                        error: err.message,
+                      });
+                    });
+                })
+                .catch((err) => {
+                  res.status(500).json({
+                    status: 0,
+                    message:
+                      "An error occurred while updating the issue record",
+                    error: err.message,
+                  });
+                });
+            })
+            .catch((err) => {
+              res.status(500).json({
+                status: 0,
+                message: "An error occurred while checking the issue record",
+                error: err.message,
+              });
+            });
+        })
+        .catch((err) => {
+          res.status(500).json({
+            status: 0,
+            message: "An error occurred while retrieving the book",
+            error: err.message,
+          });
+        });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        status: 0,
+        message: "An error occurred while retrieving the user",
+        error: err.message,
+      });
+    });
+});
+
+
 sequelize.sync()
 app.listen(3000)
